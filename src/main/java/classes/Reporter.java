@@ -32,9 +32,7 @@ public class Reporter {
             stringBuilder.append("Ok");
 
             File fileEmail = new File(System.getProperty("user.dir")
-                    + File.separator + "src" + File.separator + "main"
-                    + File.separator + "resources" + File.separator
-                    + "mails" + File.separator + "email.csv");
+                    + File.separator + "config" + File.separator + "gmail.csv");
 
             try {
                 BufferedReader bufferedReader =

@@ -3,6 +3,10 @@ package classes;
 import interfaces.IStringExpressionChecker;
 import interfaces.IStringExpressionGenerator;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
@@ -19,55 +23,74 @@ public class StringExpressionGenerator implements IStringExpressionGenerator {
     @Override
     public String generate(int minLength) {
         if (minLength > 0) {
-            try (Connection connection = DriverManager.getConnection(
-                    "jdbc:postgresql://localhost:5432/postgres",
-                    "postgres", "password")) {
-                IStringExpressionChecker checker = new StringExpressionChecker();
+            try {
+                File filePostgresql = new File(System.getProperty("user.dir")
+                        + File.separator + "config" + File.separator + "postgresql.csv");
 
-                Random random = new Random();
+                BufferedReader bufferedReader =
+                        new BufferedReader(new FileReader(filePostgresql));
 
-                boolean isExpressionCorrect;
+                String line;
+                String[] values;
 
-                String expression;
+                if ((line = bufferedReader.readLine()) != null) {
+                    values = line
+                            .replaceAll("\\s+|'", "")
+                            .replaceAll("[\\w]+:", "").split(",");
 
-                List<String> expressionItems = new ArrayList<>();
+                    try (Connection connection = DriverManager.getConnection(
+                            "jdbc:postgresql://" + values[0] + ":" + values[1]
+                                    + "/" + values[2], values[3], values[4])) {
+                        IStringExpressionChecker checker = new StringExpressionChecker();
 
-                long millis = System.currentTimeMillis();
+                        Random random = new Random();
 
-                do {
-                    if (System.currentTimeMillis() - millis > TimeUnit.SECONDS.toMillis(1)) {
-                        millis = System.currentTimeMillis();
-                        expressionItems = new ArrayList<>();
-                    }
+                        boolean isExpressionCorrect;
 
-                    isExpressionCorrect = false;
+                        String expression;
 
-                    List<String> expressionItemsModified = new ArrayList<>(expressionItems);
+                        List<String> expressionItems = new ArrayList<>();
 
-                    for (int j = 0; j < random.nextInt(5) + 1; j++) {
-                        expressionItemsModified.add(expressionItemsModified.size() > 0
-                                ? random.nextInt(expressionItemsModified.size()) : 0, getExpressionItem());
-                    }
+                        long millis = System.currentTimeMillis();
 
-                    expression = new StringExpressionCleaner().clean(expressionItemsModified.stream()
-                            .map(Object::toString)
-                            .collect(Collectors.joining()));
-
-                    if (checker.check(expression)) {
-                        try (ResultSet expressionResultSet = connection.createStatement().executeQuery(
-                                "SELECT " + expression + ";")) {
-
-                            if (expressionResultSet.next()) {
-                                expressionItems = new ArrayList<>(expressionItemsModified);
-                                isExpressionCorrect = true;
+                        do {
+                            if (System.currentTimeMillis() - millis > TimeUnit.SECONDS.toMillis(1)) {
+                                millis = System.currentTimeMillis();
+                                expressionItems = new ArrayList<>();
                             }
-                        } catch (SQLException ignored) {
-                        }
-                    }
-                } while (!isExpressionCorrect || expression.length() < minLength);
 
-                return expression;
-            } catch (SQLException e) {
+                            isExpressionCorrect = false;
+
+                            List<String> expressionItemsModified = new ArrayList<>(expressionItems);
+
+                            for (int j = 0; j < random.nextInt(5) + 1; j++) {
+                                expressionItemsModified.add(expressionItemsModified.size() > 0
+                                        ? random.nextInt(expressionItemsModified.size()) : 0, getExpressionItem());
+                            }
+
+                            expression = new StringExpressionCleaner().clean(expressionItemsModified.stream()
+                                    .map(Object::toString)
+                                    .collect(Collectors.joining()));
+
+                            if (checker.check(expression)) {
+                                try (ResultSet expressionResultSet = connection.createStatement().executeQuery(
+                                        "SELECT " + expression + ";")) {
+
+                                    if (expressionResultSet.next()) {
+                                        expressionItems = new ArrayList<>(expressionItemsModified);
+                                        isExpressionCorrect = true;
+                                    }
+                                } catch (SQLException ignored) {
+                                }
+                            }
+                        } while (!isExpressionCorrect || expression.length() < minLength);
+
+                        return expression;
+                    } catch (SQLException e) {
+                        return null;
+                    }
+                }
+            } catch (IOException e) {
                 return null;
             }
         }

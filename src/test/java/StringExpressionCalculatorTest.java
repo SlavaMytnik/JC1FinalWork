@@ -33,7 +33,7 @@ class StringExpressionCalculatorTest {
      *                 строкового арифметического выражения
      */
     @ParameterizedTest
-    @CsvFileSource(resources = "expressions/bracket.csv", delimiter = '=')
+    @CsvFileSource(resources = "bracket.csv", delimiter = '=')
     void bracketTest(String expression, Double expected) {
         IStringOperation stringOperation = new StringBracket(CALCULATOR_INNER);
 
@@ -50,7 +50,7 @@ class StringExpressionCalculatorTest {
      *                 строкового арифметического выражения
      */
     @ParameterizedTest
-    @CsvFileSource(resources = "expressions/module.csv", delimiter = '=')
+    @CsvFileSource(resources = "module.csv", delimiter = '=')
     void moduleTest(String expression, Double expected) {
         IStringOperation stringOperation = new StringModule(CALCULATOR_INNER);
 
@@ -67,7 +67,7 @@ class StringExpressionCalculatorTest {
      *                 строкового арифметического выражения
      */
     @ParameterizedTest
-    @CsvFileSource(resources = "expressions/power.csv", delimiter = '=')
+    @CsvFileSource(resources = "power.csv", delimiter = '=')
     void powerTest(String expression, Double expected) {
         IStringOperation stringOperation = new StringPower();
 
@@ -84,7 +84,7 @@ class StringExpressionCalculatorTest {
      *                 строкового арифметического выражения
      */
     @ParameterizedTest
-    @CsvFileSource(resources = "expressions/division.csv", delimiter = '=')
+    @CsvFileSource(resources = "division.csv", delimiter = '=')
     void divisionTest(String expression, Double expected) {
         IStringOperation stringOperation = new StringDivision();
 
@@ -101,7 +101,7 @@ class StringExpressionCalculatorTest {
      *                 строкового арифметического выражения
      */
     @ParameterizedTest
-    @CsvFileSource(resources = "expressions/multiplication.csv", delimiter = '=')
+    @CsvFileSource(resources = "multiplication.csv", delimiter = '=')
     void multiplicationTest(String expression, Double expected) {
         IStringOperation stringOperation = new StringMultiplication();
 
@@ -118,7 +118,7 @@ class StringExpressionCalculatorTest {
      *                 строкового арифметического выражения
      */
     @ParameterizedTest
-    @CsvFileSource(resources = "expressions/addition.csv", delimiter = '=')
+    @CsvFileSource(resources = "addition.csv", delimiter = '=')
     void additionTest(String expression, Double expected) {
         IStringOperation stringOperation = new StringAddition();
 
@@ -135,7 +135,7 @@ class StringExpressionCalculatorTest {
      *                 строкового арифметического выражения
      */
     @ParameterizedTest
-    @CsvFileSource(resources = "expressions/subtraction.csv", delimiter = '=')
+    @CsvFileSource(resources = "subtraction.csv", delimiter = '=')
     void subtractionTest(String expression, Double expected) {
         IStringOperation stringOperation = new StringSubtraction();
 
